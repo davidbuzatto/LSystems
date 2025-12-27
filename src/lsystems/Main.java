@@ -31,7 +31,8 @@ public class Main extends EngineFrame {
         
         //buildFractalBinaryTree( 7, turtle, getScreenWidth() / 2, getScreenHeight() - 20, -90, 3 );
         //buildCantorSet( 7, turtle, 10, getScreenHeight() / 2, 0, 3 );
-        //buildKochCurve( 5, turtle, 10, getScreenHeight() - 20, 0, 3 );
+        //buildKochCurve( 4, turtle, 150, 150, 0, 4 );
+        //buildKochCurve90( 5, turtle, 10, getScreenHeight() - 20, 0, 3 );
         //buildHilbertCurve( 6, turtle, getScreenWidth() - 10, getScreenHeight() - 10, -90, 3 );
         //buildPeanoCurve( 4, turtle, 10, getScreenHeight() - 10, -90, 3 );
         //buildSierpinskiTriangle( 6, turtle, getScreenWidth() - 180, getScreenHeight() - 20, -180, 7 );
@@ -51,22 +52,24 @@ public class Main extends EngineFrame {
         } else if ( isKeyPressed( KEY_TWO ) ) {
             buildCantorSet( 7, turtle, 10, getScreenHeight() / 2, 0, 3 );
         } else if ( isKeyPressed( KEY_THREE ) ) {
-            buildKochCurve( 4, turtle, 10, getScreenHeight() - 20, 0, 5 );
+            buildKochCurve( 4, turtle, 150, 150, 0, 4 );
         } else if ( isKeyPressed( KEY_FOUR ) ) {
-            buildHilbertCurve( 6, turtle, getScreenWidth() - 10, getScreenHeight() - 10, -90, 3 );
+            buildKochCurve90( 4, turtle, 10, getScreenHeight() - 20, 0, 3 );
         } else if ( isKeyPressed( KEY_FIVE ) ) {
-            buildPeanoCurve( 4, turtle, 10, getScreenHeight() - 10, -90, 3 );
+            buildHilbertCurve( 6, turtle, getScreenWidth() - 10, getScreenHeight() - 10, -90, 3 );
         } else if ( isKeyPressed( KEY_SIX ) ) {
-            buildSierpinskiTriangle( 6, turtle, getScreenWidth() - 180, getScreenHeight() - 20, -180, 7 );
+            buildPeanoCurve( 4, turtle, 10, getScreenHeight() - 10, -90, 3 );
         } else if ( isKeyPressed( KEY_SEVEN ) ) {
-            buildSierpinskiArrowCurve( 8, turtle, 10, getScreenHeight() - 20, 0, 2 );
+            buildSierpinskiTriangle( 6, turtle, getScreenWidth() - 180, getScreenHeight() - 20, -180, 7 );
         } else if ( isKeyPressed( KEY_EIGHT ) ) {
-            buildDragonCurve( 14, turtle, getScreenWidth() / 2 - 150, getScreenHeight() / 2 + 60, 90, 3 );
+            buildSierpinskiArrowCurve( 8, turtle, 10, getScreenHeight() - 20, 0, 2 );
         } else if ( isKeyPressed( KEY_NINE ) ) {
-            buildFractalPlant( 6, turtle, 50, getScreenHeight() - 10, -90, 3 );
+            buildDragonCurve( 14, turtle, getScreenWidth() / 2 - 150, getScreenHeight() / 2 + 60, 90, 3 );
         } else if ( isKeyPressed( KEY_ZERO ) ) {
-            buildFractalPlant2( 6, turtle, 50, getScreenHeight() - 10, -90, 3 );
+            buildFractalPlant( 6, turtle, 50, getScreenHeight() - 10, -90, 3 );
         } else if ( isKeyPressed( KEY_MINUS ) ) {
+            buildFractalPlant2( 6, turtle, 50, getScreenHeight() - 10, -90, 3 );
+        } else if ( isKeyPressed( KEY_EQUAL ) ) {
             int n = 4;
             double maxN = 6;
             buildPenrosePattern( n, turtle, getScreenWidth() / 2, getScreenHeight() / 2, -90, 15 * (maxN/n) );
@@ -145,6 +148,33 @@ public class Main extends EngineFrame {
     }
     
     private void buildKochCurve( int n, Turtle turtle, double x, double y, double startingAngle, double drawLength ) {
+        
+        turtle.reset( x, y, startingAngle );
+        double angle = 60;
+        
+        //String axiom = "F";
+        String axiom = "F--F--F";
+        
+        Map<Character, String> rules = new HashMap<>();
+        rules.put( 'F', "F+F--F+F" );
+        
+        Map<Character, Consumer<Turtle>> actions = new HashMap<>();
+        actions.put( 'F', t -> {
+            t.moveForward( drawLength );
+        });
+        actions.put( '+', t -> {
+            t.rotate( -angle );
+        });
+        actions.put( '-', t -> {
+            t.rotate( angle );
+        });
+        
+        LSystem system = new LSystem( axiom, rules, actions );
+        system.apply( n, turtle );
+        
+    }
+    
+    private void buildKochCurve90( int n, Turtle turtle, double x, double y, double startingAngle, double drawLength ) {
         
         turtle.reset( x, y, startingAngle );
         double angle = 90;
