@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Exemplos de L-Systems
+ * L-Systems examples
  * 
  * @author Prof. Dr. David Buzatto
  */
