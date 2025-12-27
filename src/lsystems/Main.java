@@ -32,24 +32,59 @@ public class Main extends EngineFrame {
         //buildFractalBinaryTree( 7, turtle, getScreenWidth() / 2, getScreenHeight() - 20, -90, 3 );
         //buildCantorSet( 7, turtle, 10, getScreenHeight() / 2, 0, 3 );
         //buildKochCurve( 5, turtle, 10, getScreenHeight() - 20, 0, 3 );
+        //buildHilbertCurve( 6, turtle, getScreenWidth() - 10, getScreenHeight() - 10, -90, 3 );
+        //buildPeanoCurve( 4, turtle, 10, getScreenHeight() - 10, -90, 3 );
         //buildSierpinskiTriangle( 6, turtle, getScreenWidth() - 180, getScreenHeight() - 20, -180, 7 );
         //buildSierpinskiArrowCurve( 8, turtle, 10, getScreenHeight() - 20, 0, 2 );
         //buildDragonCurve( 14, turtle, getScreenWidth() / 2 - 150, getScreenHeight() / 2 + 60, 90, 3 );
-        buildFractalPlant( 6, turtle, 50, getScreenHeight() - 10, -90, 3 );
+        //buildFractalPlant( 6, turtle, 50, getScreenHeight() - 10, -90, 3 );
+        //buildFractalPlant2( 6, turtle, 50, getScreenHeight() - 10, -90, 3 );
         //buildPenrosePattern( 2, turtle, getScreenWidth() / 2, getScreenHeight() / 2, -90, 15 * ((double)6/2) );
         
     }
 
     @Override
-    public void update( double delta ) {        
+    public void update( double delta ) {
+        
+        if ( isKeyPressed( KEY_ONE ) ) {
+            buildFractalBinaryTree( 7, turtle, getScreenWidth() / 2, getScreenHeight() - 20, -90, 3 );
+        } else if ( isKeyPressed( KEY_TWO ) ) {
+            buildCantorSet( 7, turtle, 10, getScreenHeight() / 2, 0, 3 );
+        } else if ( isKeyPressed( KEY_THREE ) ) {
+            buildKochCurve( 4, turtle, 10, getScreenHeight() - 20, 0, 5 );
+        } else if ( isKeyPressed( KEY_FOUR ) ) {
+            buildHilbertCurve( 6, turtle, getScreenWidth() - 10, getScreenHeight() - 10, -90, 3 );
+        } else if ( isKeyPressed( KEY_FIVE ) ) {
+            buildPeanoCurve( 4, turtle, 10, getScreenHeight() - 10, -90, 3 );
+        } else if ( isKeyPressed( KEY_SIX ) ) {
+            buildSierpinskiTriangle( 6, turtle, getScreenWidth() - 180, getScreenHeight() - 20, -180, 7 );
+        } else if ( isKeyPressed( KEY_SEVEN ) ) {
+            buildSierpinskiArrowCurve( 8, turtle, 10, getScreenHeight() - 20, 0, 2 );
+        } else if ( isKeyPressed( KEY_EIGHT ) ) {
+            buildDragonCurve( 14, turtle, getScreenWidth() / 2 - 150, getScreenHeight() / 2 + 60, 90, 3 );
+        } else if ( isKeyPressed( KEY_NINE ) ) {
+            buildFractalPlant( 6, turtle, 50, getScreenHeight() - 10, -90, 3 );
+        } else if ( isKeyPressed( KEY_ZERO ) ) {
+            buildFractalPlant2( 6, turtle, 50, getScreenHeight() - 10, -90, 3 );
+        } else if ( isKeyPressed( KEY_MINUS ) ) {
+            int n = 4;
+            double maxN = 6;
+            buildPenrosePattern( n, turtle, getScreenWidth() / 2, getScreenHeight() / 2, -90, 15 * (maxN/n) );
+        }
+        
+        if ( getKeyPressed() != KEY_NULL ) {
+            steps = 1;
+        }
+        
         steps = MathUtils.clamp( steps + STEP_INCREMENT, 1, turtle.getFrameCount() );
+        
     }
     
     @Override
     public void draw() {
         clearBackground( WHITE );
-        //turtle.draw( steps, this );
-        turtle.draw( this );
+        turtle.draw( steps, this );
+        //turtle.draw( this );
     }
     
     private void buildFractalBinaryTree( int n, Turtle turtle, double x, double y, double startingAngle, double drawLength ) {
@@ -128,6 +163,60 @@ public class Main extends EngineFrame {
         });
         actions.put( '-', t -> {
             t.rotate( angle );
+        });
+        
+        LSystem system = new LSystem( axiom, rules, actions );
+        system.apply( n, turtle );
+        
+    }
+    
+    private void buildHilbertCurve( int n, Turtle turtle, double x, double y, double startingAngle, double drawLength ) {
+        
+        turtle.reset( x, y, startingAngle );
+        double angle = 90;
+        
+        String axiom = "A";
+        
+        Map<Character, String> rules = new HashMap<>();
+        rules.put( 'A', "-BF+AFA+FB-" );
+        rules.put( 'B', "+AF-BFB-FA+" );
+        
+        Map<Character, Consumer<Turtle>> actions = new HashMap<>();
+        actions.put( 'F', t -> {
+            t.moveForward( drawLength );
+        });
+        actions.put( '+', t -> {
+            t.rotate( angle );
+        });
+        actions.put( '-', t -> {
+            t.rotate( -angle );
+        });
+        
+        LSystem system = new LSystem( axiom, rules, actions );
+        system.apply( n, turtle );
+        
+    }
+    
+    private void buildPeanoCurve( int n, Turtle turtle, double x, double y, double startingAngle, double drawLength ) {
+        
+        turtle.reset( x, y, startingAngle );
+        double angle = 90;
+        
+        String axiom = "X";
+        
+        Map<Character, String> rules = new HashMap<>();
+        rules.put( 'X', "XFYFX+F+YFXFY-F-XFYFX" );
+        rules.put( 'Y', "YFXFY-F-XFYFX+F+YFXFY" );
+        
+        Map<Character, Consumer<Turtle>> actions = new HashMap<>();
+        actions.put( 'F', t -> {
+            t.moveForward( drawLength );
+        });
+        actions.put( '+', t -> {
+            t.rotate( angle );
+        });
+        actions.put( '-', t -> {
+            t.rotate( -angle );
         });
         
         LSystem system = new LSystem( axiom, rules, actions );
@@ -234,6 +323,42 @@ public class Main extends EngineFrame {
         
         Map<Character, String> rules = new HashMap<>();
         rules.put( 'X', "F+[[X]-X]-F[-FX]+X" );
+        rules.put( 'F', "FF" );
+        
+        Map<Character, Consumer<Turtle>> actions = new HashMap<>();
+        actions.put( 'F', t -> {
+            t.moveForward( drawLength );
+        });
+        actions.put( 'X', t -> {
+            // do nothing
+        });
+        actions.put( '+', t -> {
+            t.rotate( -angle );
+        });
+        actions.put( '-', t -> {
+            t.rotate( angle );
+        });
+        actions.put( '[', t -> {
+            t.save();
+        });
+        actions.put( ']', t -> {
+            t.restoreNotPurge();
+        });
+        
+        LSystem system = new LSystem( axiom, rules, actions );
+        system.apply( n, turtle );
+        
+    }
+    
+    private void buildFractalPlant2( int n, Turtle turtle, double x, double y, double startingAngle, double drawLength ) {
+
+        turtle.reset( x, y, startingAngle );
+        double angle = 25;
+        
+        String axiom = "-X";
+        
+        Map<Character, String> rules = new HashMap<>();
+        rules.put( 'X', "F[+X][-X]FX" );
         rules.put( 'F', "FF" );
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
