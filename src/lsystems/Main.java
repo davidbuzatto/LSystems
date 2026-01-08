@@ -79,7 +79,7 @@ public class Main extends EngineFrame {
             steps = 1;
         }
         
-        steps = MathUtils.clamp( steps + STEP_INCREMENT, 1, turtle.getFrameCount() );
+        steps = MathUtils.clamp( steps + STEP_INCREMENT, 1, turtle.getStepCount() );
         
     }
     
@@ -88,6 +88,7 @@ public class Main extends EngineFrame {
         clearBackground( WHITE );
         turtle.draw( steps, this );
         //turtle.draw( this );
+        drawText( "Press 1 to - to change current L-System", 10, 10, 20, BLACK );
     }
     
     private void buildFractalBinaryTree( int n, Turtle turtle, double x, double y, double startingAngle, double drawLength ) {
@@ -103,17 +104,17 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( '0', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( '1', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( '[', t -> {
-            t.save();
+            t.saveState();
             t.rotate( -angle );
         });
         actions.put( ']', t -> {
-            t.restoreNotPurge();
+            t.restoreStateKeepPath();
             t.rotate( angle );
         });
         
@@ -134,12 +135,12 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( 'A', t -> {
-            t.lowerBrush();
-            t.moveForward( drawLength );
+            t.penDown();
+            t.forward( drawLength );
         });
         actions.put( 'B', t -> {
-            t.raiseBrush();
-            t.moveForward( drawLength );
+            t.penUp();
+            t.forward( drawLength );
         });
         
         LSystem system = new LSystem( axiom, rules, actions );
@@ -160,7 +161,7 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( 'F', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( '+', t -> {
             t.rotate( -angle );
@@ -186,7 +187,7 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( 'F', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( '+', t -> {
             t.rotate( -angle );
@@ -213,7 +214,7 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( 'F', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( '+', t -> {
             t.rotate( angle );
@@ -240,7 +241,7 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( 'F', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( '+', t -> {
             t.rotate( angle );
@@ -267,10 +268,10 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( 'F', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( 'G', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( '+', t -> {
             t.rotate( -angle );
@@ -297,10 +298,10 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( 'A', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( 'B', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( '+', t -> {
             t.rotate( -angle );
@@ -327,10 +328,10 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( 'F', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( 'G', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( '+', t -> {
             t.rotate( angle );
@@ -357,7 +358,7 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( 'F', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( 'X', t -> {
             // do nothing
@@ -369,10 +370,10 @@ public class Main extends EngineFrame {
             t.rotate( angle );
         });
         actions.put( '[', t -> {
-            t.save();
+            t.saveState();
         });
         actions.put( ']', t -> {
-            t.restoreNotPurge();
+            t.restoreStateKeepPath();
         });
         
         LSystem system = new LSystem( axiom, rules, actions );
@@ -393,7 +394,7 @@ public class Main extends EngineFrame {
         
         Map<Character, Consumer<Turtle>> actions = new HashMap<>();
         actions.put( 'F', t -> {
-            t.moveForward( drawLength );
+            t.forward( drawLength );
         });
         actions.put( 'X', t -> {
             // do nothing
@@ -405,10 +406,10 @@ public class Main extends EngineFrame {
             t.rotate( angle );
         });
         actions.put( '[', t -> {
-            t.save();
+            t.saveState();
         });
         actions.put( ']', t -> {
-            t.restoreNotPurge();
+            t.restoreStateKeepPath();
         });
         
         LSystem system = new LSystem( axiom, rules, actions );
@@ -437,8 +438,8 @@ public class Main extends EngineFrame {
         
         actions.put( 'F', t -> {
             for ( int i = 0; i < values.get( "repeats" ); i++ ) {
-                t.setBrushPaint( ColorUtils.fade( BLACK, 0.2 ) );
-                t.moveForward( drawLength );
+                t.setPenColor( ColorUtils.fade( BLACK, 0.2 ) );
+                t.forward( drawLength );
             }
             values.put( "repeats", 1 );
         });
@@ -458,11 +459,11 @@ public class Main extends EngineFrame {
         });
         
         actions.put( '[', t -> {
-            t.save();
+            t.saveState();
         });
         
         actions.put( ']', t -> {
-            t.restoreNotPurge();
+            t.restoreStateKeepPath();
         });
         
         for ( char c = '0'; c <= '9'; c++ ) {
